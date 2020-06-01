@@ -3,30 +3,33 @@
 /**
  * Plugin Name: MakerVsVirus Hub-Plugin
  * Plugin URI: https://www.makervsvirus.org
- * Description: Add's Hub-Functionality
+ * Description: Add's Hub-Map-Functionality
  * Version: 0.1
  * Text Domain: makervsvirus-hubplugin
  * Author: Benedikt Hübschen & Jonathan Günz
  * Author URI: https://www.makervsvirus.org
  */
 
+$MAPTOKEN = "pk.eyJ1IjoiaGFybW9uaWVtYW5kIiwiYSI6ImNqYnMweG9rOTB5NGwycW1mZ3M1M3g2bGkifQ.BWxSwxb35Ed-MfVNkquz2w";
+
 add_shortcode('hub-map', 'hub_map');
 
 
 function hub_map($atts)
 {
+    global $MAPTOKEN;
     wp_enqueue_script("wp_leaflet-script", "https://unpkg.com/leaflet@1.6.0/dist/leaflet.js");
     wp_enqueue_style("wp_leaflet-style", "https://unpkg.com/leaflet@1.6.0/dist/leaflet.css");
     ob_start(); ?>
-    <section id="map" class="">
-        <div class="">
-            <div class="" id="hub-info">
-                <h3>
+    <section id="map">
+        <div>
+            <div id="hub-info">
+                <h3></h3>
             </div>
-            <div class="" style="position: relative;">
+            <div style="position: relative;">
                 <div id="mapid"></div>
-                <div id="mapOverlay" class="">
-                    <div style="">
+                <div id="mapOverlay">
+                    <div>
                         Press [Strg] + [Scroll] to zoom
                     </div>
                 </div>
@@ -124,7 +127,7 @@ function hub_map($atts)
                 id: 'mapbox/streets-v11',
                 tileSize: 512,
                 zoomOffset: -1,
-                accessToken: 'pk.eyJ1IjoiaGFybW9uaWVtYW5kIiwiYSI6ImNqYnMweG9rOTB5NGwycW1mZ3M1M3g2bGkifQ.BWxSwxb35Ed-MfVNkquz2w'
+                accessToken: '<?= $MAPTOKEN ?>'
             }).addTo(map);
 
 
@@ -137,7 +140,6 @@ function hub_map($atts)
                     color = 'green';
                     opacity = 0.4;
                 }
-
 
                 L.geoJSON(feature, {
                     onEachFeature: onEachFeature,
@@ -154,7 +156,6 @@ function hub_map($atts)
             <?php if (isset($show_makers)) : ?>
                 var greenIcon = L.icon({
                     iconUrl: '<?php echo get_template_directory_uri() ?>/assets/images/marker-maker.png',
-
                     iconSize: [30, 30], // size of the icon
                     iconAnchor: [30, 30], // point of the icon which will correspond to marker's location
                     popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
@@ -170,7 +171,6 @@ function hub_map($atts)
 
             var redIcon = L.icon({
                 iconUrl: '<?php echo get_template_directory_uri() ?>/assets/images/marker-hub.png',
-
                 iconSize: [23, 30], // size of the icon
                 iconAnchor: [23, 30], // point of the icon which will correspond to marker's location
                 popupAnchor: [-15, -30] // point from which the popup should open relative to the iconAnchor
@@ -178,15 +178,11 @@ function hub_map($atts)
 
             hubs.forEach(hub => {
                 var marker = L.marker([hub.lat, hub.long], {
-                        icon: redIcon
-                    })
-                    .addTo(map);
-
+                    icon: redIcon
+                }).addTo(map);
                 var customPopup = "<span style='font-size: bold;'>" + hub.data.name + "</span><br /> <a href='" + hub.data.permalink + "'>Details anzeigen</a>";
                 marker.bindPopup(customPopup);
             });
-
-
 
             map.scrollWheelZoom.disable();
 
@@ -207,7 +203,6 @@ function hub_map($atts)
                         jQuery('#mapOverlay').removeClass('map-scroll');
                     }, 1000);
                 }
-
             });
 
             jQuery(window).bind('mousewheel DOMMouseScroll', function(event) {
@@ -227,7 +222,6 @@ function hub_map($atts)
             left: 0;
             right: 0;
             z-index: 1000;
-
             background: rgba(0, 0, 0, 0.5);
             display: none;
         }
@@ -237,7 +231,6 @@ function hub_map($atts)
             justify-items: center;
             align-items: center;
             justify-content: center;
-
             color: #fff;
             font-size: 2rem;
         }
